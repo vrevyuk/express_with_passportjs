@@ -8,6 +8,10 @@ var BasicStrategy = require('passport-http').BasicStrategy;
 var conf = require('nconf');
 var app = express();
 var db = require('db');
+var jade = require('jade');
+
+app.set('view engine', 'jade');
+app.set('views', './views');
 
 conf.env().file({file: './config/index.json'});
 
@@ -30,7 +34,7 @@ passport.deserializeUser(function (usertoken, done) {
 
 app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({ extended: true }));
-app.use(require('express-session')({ secret: 'secret_black_cat', resave: true, saveUninitialized: true }));
+app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/login', passport.authenticate('basic', {session: true}), function (req, res, next) {
