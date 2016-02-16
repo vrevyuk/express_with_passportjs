@@ -1,0 +1,14 @@
+{
+  "name": "express_with_passportjs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vitaly Revyuk",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
