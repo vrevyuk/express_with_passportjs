@@ -9,6 +9,14 @@
   "author": "Vitaly Revyuk",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.13.4"
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "mysql": "^2.10.2",
+    "nconf": "^0.8.4",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "winston": "^2.1.1"
   }
 }
