@@ -40,7 +40,7 @@ app.use(passport.session());
 app.use('/login', passport.authenticate('basic', {session: true}), function (req, res, next) {
     res.redirect('/');
 });
-app.use(require('router'));
+app.use(require('./router'));
 app.use(require('./error404'));
 app.use(require('./error500'));
 
