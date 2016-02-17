@@ -12,11 +12,11 @@ var jade = require('jade');
 
 app.set('view engine', 'jade');
 app.set('views', './views');
+app.use(express.static('./static'));
 
 conf.env().file({file: './config/index.json'});
 
 passport.use(new BasicStrategy(function (username, password, done) {
-    log.info(username, password);
     db.User.findByLoginPassword(username, password, function(err, user) {
         done(err, user);
     });

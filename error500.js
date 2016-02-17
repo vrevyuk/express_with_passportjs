@@ -6,11 +6,13 @@ var conf = require('nconf');
 conf.env().file({file: './config/index.json'});
 
 module.exports = function (err, req, res, next) {
-    log.error(err);
-    res.status(500);
-    if(conf.get('node_env') == 'develop') {
-        res.send('Internal error: ', err);
-    } else {
-        res.send('Internal server error.');
+    log.error('ER:' + err);
+    res.status(err);
+    switch (parseInt(err)) {
+        case 401:
+            res.send('(' + err + ') Require authorization.');
+            break;
+        default:
+            res.send('(' + err + ') Internal  server error.');
     }
 };

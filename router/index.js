@@ -18,11 +18,11 @@ router.use('/logout', function (req, res, next) {
 });
 
 router.use('/', function (req, res, next) {
-    log.info('User: ', JSON.stringify(req.user));
+    log.info('/');
     if (req.isAuthenticated()) {
-        res.render('main', {user: req.user.token});
+        res.render('main', {user: req.user});
     } else {
-        res.render('login');
+        res.render('greeting');
     }
 });
 
