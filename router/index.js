@@ -3,27 +3,28 @@
  */
 var express = require('express');
 var router = express.Router();
-var log = require('mylogger');
+var log = require('../mylogger');
 
-router.use('/logout', function (req, res, next) {
-    if(req.isAuthenticated()) {
-        req.logout();
-        req.session.destroy(function (err) {
-            if (err) log.error(JSON.stringify(err));
-        });
-        res.redirect('/');
-    } else {
-        next();
-    }
+router.get('/', function (req, res) {
+    res.render('greeting', {
+        path: req.path,
+        isAuth: req.isAuthenticated(),
+        user: req.user
+    });
 });
 
-router.use('/', function (req, res, next) {
-    log.info('/');
-    if (req.isAuthenticated()) {
-        res.render('main', {user: req.user});
-    } else {
-        res.render('greeting');
-    }
+router.get('/logout', function (req, res) {
+    req.logout();
+    req.session.destroy();
+    res.redirect('/greeting');
+});
+
+router.get('/greeting', function (req, res) {
+    res.render('greeting', {
+        path: req.path,
+        isAuth: req.isAuthenticated(),
+        user: req.user
+    });
 });
 
 module.exports = router;

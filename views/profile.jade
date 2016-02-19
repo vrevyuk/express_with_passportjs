@@ -1,0 +1,54 @@
+//
+   Created by glavnyjpolzovatel on 18.02.16.
+
+include html
+include tabheader
+.container
+   .row
+      .col-lg-6
+         .panel.panel-info
+            .panel-heading
+               .panel-title Basic profile info
+            .panel-body
+               table.table
+                  tr
+                     td Full name
+                     td #{user.name}
+                  tr
+                     td Login
+                     td #{user.login}
+                  tr
+                     td Credit
+                     td #{user.credit} UAH
+                  tr
+                     td Discount
+                     td #{user.discount} %
+                  tr
+                     td Discount on stock
+                     td #{user.stock_discount} %
+                  tr
+                     td Total sum on all stock
+                     td #{user.stock_sum} UAH
+      .col-lg-6
+         .panel.panel-info
+            .panel-heading
+               .panel-title Change password
+            .panel-body
+               form(role="form" action="/profile" method="post")
+                  input(type="hidden" name="action" value="changepasswd")
+                  input(type="hidden" name="token" value="#{user.token}")
+                  .form-group
+                     label(for="old_password") Old password
+                     input.form-control(type="text" name="old_password" id="old_password")
+                  .form-group
+                     label(for="new_password") New password
+                     input.form-control(type="text" name="new_password" id="new_password")
+                  .form-group
+                     label(for="retyped_password") Retype new password
+                     input.form-control(type="text" name="retyped_password" id="retyped_password")
+                  button.btn.btn-default(type="submit") Change
+               br
+               if typeof updatedPassword !== 'undefined' && updatedPassword == 0
+                  .alert.alert-danger(role="alert") Error updating passwword
+               else if typeof updatedPassword !== 'undefined' && updatedPassword == 1
+                  .alert.alert-success(role="alert") Successfully updated

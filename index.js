@@ -1,24 +1,32 @@
 /**
  * Created by vitaly on 16.02.16.
  */
-var log = require('mylogger');
+var log = require('./mylogger');
 var express = require('express');
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var conf = require('nconf');
+conf.env().file({file: './config/index.json'});
 var app = express();
-var db = require('db');
+
+var router = require('./router');
+var profile = require('./router/profile');
+var money = require('./router/money');
+
+
+var db = require('./db');
 var jade = require('jade');
 
 app.set('view engine', 'jade');
 app.set('views', './views');
 app.use(express.static('./static'));
 
-conf.env().file({file: './config/index.json'});
 
 passport.use(new BasicStrategy(function (username, password, done) {
-    db.User.findByLoginPassword(username, password, function(err, user) {
-        done(err, user);
+    db.user.findByLoginPassword(username, password, function(err, user) {
+        if(err) return done(err);
+        if(!err && !user) return done(null, null);
+        return done(null, user);
     });
 }));
 
@@ -27,8 +35,9 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (usertoken, done) {
-    db.User.findByToken(usertoken, function (err, user) {
-        done(err, user);
+    db.user.findByToken(usertoken, function (err, user) {
+        if (err) return done(err);
+        done(null, user);
     });
 });
 
@@ -40,7 +49,12 @@ app.use(passport.session());
 app.use('/login', passport.authenticate('basic', {session: true}), function (req, res, next) {
     res.redirect('/');
 });
-app.use(require('./router'));
+
+app.use('/', router);
+app.use('/profile', profile);
+app.use('/money', money);
+
+
 app.use(require('./error404'));
 app.use(require('./error500'));
 
@@ -48,6 +62,6 @@ app.listen(conf.get('network:port'), function (err) {
     if(err) {
         log.error('Error running: ' + err.message);
     } else {
-        log.info('Server started on ' + conf.get('network:port') + '.');
+        log.info(new Date() + ' Server started on ' + conf.get('network:port') + '.');
     }
 });

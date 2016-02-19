@@ -1,0 +1,28 @@
+//
+   Created by glavnyjpolzovatel on 18.02.16.
+include html
+include tabheader
+.container
+   .panel.panel-info
+      .panel-heading
+         .panel-title Your current balance: #{balance} UAH
+      .panel-body
+         table.table.table-hover
+            thead
+               tr
+                  th id
+                  th sum
+                  th date
+                  th description
+            tbody
+               each row in list
+                  tr
+                     td #{row.id}
+                     td #{row.sum}
+                     td #{new Date(row.time_transaction * 1000)}
+                     td #{row.description}
+         ul.pager
+            li.previous
+               a(href="/money/#{prevPage}") previous
+            li.next
+               a(href="/money/#{nextPage}") next
