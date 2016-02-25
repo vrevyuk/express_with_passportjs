@@ -5,19 +5,19 @@
 var conf = require('nconf');
 conf.env().file({file: './config/index.json'});
 var express = require('express');
-var profile = express.Router();
-var db = require('../db');
+var money = express.Router();
+var db = require('../db/money');
 var log = require('../mylogger');
 
-profile.get('/', function (req, res, next) {
+money.get('/', function (req, res, next) {
     res.redirect('/money/0');
 });
 
-profile.get('/:page', function (req, res, next) {
+money.get('/:page', function (req, res, next) {
     var count = conf.get('options:rowsPerPage') || 10;
     var start = req.params.page * count;
 
-    db.money.find(req.user.token, start, count, function (err, balance, allcount, result) {
+    db.find(req.user.token, start, count, function (err, balance, allcount, result) {
         if(err) {
             next(new Error(err, err.errno));
         } else {
@@ -41,4 +41,4 @@ profile.get('/:page', function (req, res, next) {
     });
 });
 
-module.exports = profile;
+module.exports = money;

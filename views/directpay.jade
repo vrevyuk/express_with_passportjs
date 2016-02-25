@@ -3,4 +3,58 @@
 
 include html
 include tabheader
-h2 Direct pay to the customer.
+.container
+   .row
+      .col-lg-4
+         .panel.panel-default
+            .panel-heading Make transfer
+         .panel-body
+            form(role="form" method="post")
+               .form-group
+                  label(for="account") Account on VivatTV (six digit)
+                  input.form-control(type="number" id="account" name="account")
+               .form-group
+                  label(for="sum") Sum, UAH
+                  input.form-control(type="number" id="sum" name="sum")
+               .form-group
+                  label(for="description") Description
+                  textarea.form-control(id="description" name="description" rows="8")
+               button.btn.btn-default(type="submit") Make
+            br
+            case postError
+               when '0'
+                  .alert.alert-success Transfer successfully confirmed.
+               when '1'
+                  .alert.alert-danger Failed. Check input values.
+               when '2'
+                  .alert.alert-danger Failed. Check input values.
+               when '3'
+                  .alert.alert-danger Failed. This customer not found.
+               when '4'
+                  .alert.alert-danger Failed. Internal error. Retry later please.
+               when '5'
+                  .alert.alert-danger Failed. Not enough money.
+      .col-lg-8
+         .panel.panel-info
+            .panel-heading List of pays
+         .panel-body
+            table.table.table-hover
+               thead
+                  tr
+                     th id
+                     th sum, UAH
+                     th date
+                     th customer
+               tbody
+                  each row in money
+                     tr
+                        td #{row.id}
+                        td #{Math.abs(row.sum)}
+                        td #{row.formated_date}
+                        td #{row.description}
+            br
+            ul.pager
+               li.previous
+                  a(href="/directpay?page=#{prevPage}") Previous
+               li.next
+                  a(href="/directpay?page=#{nextPage}") Next

@@ -3,4 +3,4 @@
  */
 var log = require('winston');
 
-module.exports = log;
+module.exports = log.info;

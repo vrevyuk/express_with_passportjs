@@ -3,7 +3,7 @@
 include html
 include tabheader
 .container
-   .panel.panel-info
+   .panel(class=(balance < 0 ? 'panel-danger' : (balance < 500 ? 'panel-warning' : 'panel-info')))
       .panel-heading
          .panel-title Your current balance: #{balance} UAH
       .panel-body
@@ -11,7 +11,8 @@ include tabheader
             thead
                tr
                   th id
-                  th sum
+                  th(colspan="2") sum
+                  th customer
                   th date
                   th description
             tbody
@@ -19,6 +20,17 @@ include tabheader
                   tr
                      td #{row.id}
                      td #{row.sum}
+                     td
+                        case  row.type
+                           when 'ADDING'
+                              span.glyphicon.glyphicon-arrow-down(data-toggle="tooltip" title="Adding transfer money")
+                           when 'WRITEOFF'
+                              span.glyphicon.glyphicon-ban-circle(data-toggle="tooltip" title="Manually writeoff")
+                           when 'DIRECTPAY'
+                              span.glyphicon.glyphicon-arrow-up(data-toggle="tooltip" title="Direct pay to account")
+                           when 'CODEPAY'
+                              span.glyphicon.glyphicon-arrow-up(data-toggle="tooltip" title="Code used")
+                     td #{row.customer}
                      td #{new Date(row.time_transaction * 1000)}
                      td #{row.description}
          ul.pager

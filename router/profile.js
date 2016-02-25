@@ -4,7 +4,7 @@
 
 var express = require('express');
 var profile = express.Router();
-var db = require('../db');
+var db = require('../db/user');
 var log = require('../mylogger');
 
 profile.get('/', function (req, res) {
@@ -23,7 +23,7 @@ profile.post('/', function (req, res, next) {
             var newPass2 = req.body.retyped_password || '';
             var token = req.body.token || -1;
 
-            db.user.updatePassword(oldPass, newPass, newPass2, token, function (err, affectedtRows) {
+            db.updatePassword(oldPass, newPass, newPass2, token, function (err, affectedtRows) {
                 if(err) {
                     next(new Error(err, err.errno));
                 } else {

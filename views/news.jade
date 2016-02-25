@@ -2,4 +2,16 @@
    Created by glavnyjpolzovatel on 18.02.16.
 include html
 include tabheader
-h2 News page.
+.container
+   .panel-group(id="accordion")
+      each row, index in news
+         .panel.panel-info
+            .panel-heading
+               .panel-title
+                  .row
+                     .col-lg-10
+                        a(href="#news" + row['id'] data-toggle="collapse" data-parent="#accordion") #{row['title']}
+                     .col-lg-2.text-right
+                        span #{row['format_date']}
+            .panel-collapse.collapse(id="news" + row['id'] class=(index == 0 ? 'in' : '') )
+               .panel-body #{row['body']}

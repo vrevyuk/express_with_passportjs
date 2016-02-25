@@ -2,4 +2,36 @@
    Created by glavnyjpolzovatel on 18.02.16.
 include html
 include tabheader
-h2 Generate code page.
+.container
+   .row
+      .col-lg-4
+         .panel.panel-default
+            .panel-heading Add new series
+         .panel-body
+            form(role="form" method="post").form-inline
+               input(type="hidden" name="action" value="new_series")
+               .form-group
+                  label(for="new_series_name") Name &nbsp;
+                  input.form-control(type="text" id="new_series_name" name="new_series_name")
+               .form-group
+                  | &nbsp;
+                  button.btn.btn-default(type="submit") Add
+            br
+            ul.list-group
+               li.list-group-item
+                  a(href="#")
+                     span.glyphicon.glyphicon-remove &nbsp;
+                  span Name 1
+                  span.badge 123
+               li.list-group-item Name 2
+               li.list-group-item Name 3
+               li.list-group-item Name 4
+               li.list-group-item Name 5
+               li.list-group-item Name 6
+               li.list-group-item Name 7
+               li.list-group-item Name 8
+      .col-lg-8
+         .panel.panel-info
+            .panel-heading Direct transfer to VivatTV account
+         .panel-body
+            | Bla bla bla 2
