@@ -31,6 +31,13 @@ var mysqlErrorHandler = function (err) {
 };
 
 db.on('error', mysqlErrorHandler);
-db.connect();
+db.connect(function (err) {
+    if(!err) {
+        /** TODO:
+         *  if not exists db must import structure from file into the server !!!
+         *  maybe use command line executor for mysql utility ?
+         */
+    }
+});
 
 module.exports = db;

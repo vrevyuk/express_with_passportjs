@@ -3,35 +3,36 @@
 include html
 include tabheader
 .container
-   .row
-      .col-lg-4
-         .panel.panel-default
-            .panel-heading Add new series
-         .panel-body
-            form(role="form" method="post").form-inline
-               input(type="hidden" name="action" value="new_series")
-               .form-group
-                  label(for="new_series_name") Name &nbsp;
-                  input.form-control(type="text" id="new_series_name" name="new_series_name")
-               .form-group
-                  | &nbsp;
-                  button.btn.btn-default(type="submit") Add
-            br
-            ul.list-group
-               li.list-group-item
-                  a(href="#")
-                     span.glyphicon.glyphicon-remove &nbsp;
-                  span Name 1
-                  span.badge 123
-               li.list-group-item Name 2
-               li.list-group-item Name 3
-               li.list-group-item Name 4
-               li.list-group-item Name 5
-               li.list-group-item Name 6
-               li.list-group-item Name 7
-               li.list-group-item Name 8
-      .col-lg-8
-         .panel.panel-info
-            .panel-heading Direct transfer to VivatTV account
-         .panel-body
-            | Bla bla bla 2
+   .panel.panel-default
+      .panel-heading
+         .panel-title Make code
+      .panel-body
+         form(role="form" action="/code" method="post")
+            .form-group
+               label Name
+               input(type="text" placeholder="Series name").form-control
+               | &nbsp;
+            .form-group
+               input(type="number" placeholder="count").form-control
+               | &nbsp;
+            .form-group
+               input(type="number" placeholder="cost").form-control
+               | &nbsp;
+            .form-group
+               input(type="date" placeholder="expire").form-control
+               | &nbsp;
+            .form-group
+               select.form-control
+                  option Common
+                  option Stok
+            | &nbsp;
+            button.btn.btn-default(type="submit") Make
+            | &nbsp;
+            button.btn.btn-default(type="reset") Reset
+   table.table.table-haver.table-striped
+      thead
+         tr
+            th id
+            th series
+            th code
+      tbody

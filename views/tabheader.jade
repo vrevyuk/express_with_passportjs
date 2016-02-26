@@ -1,6 +1,7 @@
 //
    Created by glavnyjpolzovatel on 18.02.16.
-.navbar.navbar-default
+.container
+ .navbar.navbar-default
    .container-fluid
       .navber-header
          .navbar-brand
@@ -12,17 +13,18 @@
       .collapse.navbar-collapse
          if isAuth
             ul.nav.navbar-nav
-               li(class="#{path == '/profile' ? 'active' : ''}")
+               li(class="#{path == 'profile' ? 'active' : ''}")
                 a(href="/profile") Profile
-               li(class="#{path == '/money' ? 'active' : ''}")
+               li(class="#{path == 'money' ? 'active' : ''}")
                   a(href="/money") Money
-               li(class="#{path == '/code' ? 'active' : ''}")
+               li(class="#{path == 'code' ? 'active' : ''}")
                   a(href="/code") Activation code
-               li(class="#{path == '/directpay' ? 'active' : ''}")
+               li(class="#{path == 'directpay' ? 'active' : ''}")
                   a(href="/directpay") Direct pay
-               li(class="#{path == '/statistic' ? 'active' : ''}")
+               li(class="#{path == 'statistic' ? 'active' : ''}")
                   a(href="/statistic") Statistic
-               li(class="#{path == '/news' ? 'active' : ''}")
+               li(class="#{path == 'news' ? 'active' : ''}")
                   a(href="/news") Latest news
+            ul.nav.navbar-nav.navbar-right
                li
                   a(href="/logout") Logout

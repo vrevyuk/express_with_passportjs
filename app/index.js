@@ -56,6 +56,14 @@ app.post('/login', passport.authenticate('local', {
 app.get('/login', function (req, res) {
     res.render('login');
 });
+
+app.use(function (req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+});
 app.use('/', router);
 app.use('/profile', profile);
 app.use('/money', money);

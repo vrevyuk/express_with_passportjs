@@ -9,6 +9,10 @@ var code = express.Router();
 var db = require('../db');
 var log = require('../mylogger');
 
+code.post('/', function (req, res, next) {
+    res.redirect('/code');
+});
+
 code.get('/', function (req, res, next) {
     res.render('code', {
         path: 'code',
