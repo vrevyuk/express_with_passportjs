@@ -18,9 +18,9 @@ profile.get('/', function (req, res) {
 profile.post('/', function (req, res, next) {
     switch (req.body.action) {
         case 'changepasswd':
-            var oldPass = req.body.old_password || '';
-            var newPass = req.body.new_password || '';
-            var newPass2 = req.body.retyped_password || '';
+            var oldPass = req.body.old_password || '0';
+            var newPass = req.body.new_password || '1';
+            var newPass2 = req.body.retyped_password || '2';
             var token = req.body.token || -1;
 
             db.updatePassword(oldPass, newPass, newPass2, token, function (err, affectedtRows) {

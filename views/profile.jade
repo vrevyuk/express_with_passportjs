@@ -36,19 +36,25 @@ include tabheader
             .panel-body
                form(role="form" action="/profile" method="post")
                   input(type="hidden" name="action" value="changepasswd")
+                  input(type="hidden" name="username" value="#{user.login}")
                   input(type="hidden" name="token" value="#{user.token}")
+                  input(type="hidden" name="old_password")
+                  input(type="hidden" name="new_password")
+                  input(type="hidden" name="retyped_password")
                   .form-group
                      label(for="old_password") Old password
-                     input.form-control(type="text" name="old_password" id="old_password")
+                     input.form-control(type="password" id="text_old_password")
                   .form-group
                      label(for="new_password") New password
-                     input.form-control(type="text" name="new_password" id="new_password")
+                     input.form-control(type="password" id="text_new_password")
                   .form-group
                      label(for="retyped_password") Retype new password
-                     input.form-control(type="text" name="retyped_password" id="retyped_password")
+                     input.form-control(type="password" id="text_retyped_password")
                   button.btn.btn-default(type="submit") Change
                br
                if typeof updatedPassword !== 'undefined' && updatedPassword == 0
                   .alert.alert-danger(role="alert") Error updating passwword
                else if typeof updatedPassword !== 'undefined' && updatedPassword == 1
                   .alert.alert-success(role="alert") Successfully updated
+script(src="js/crypto-js/crypto-js.js")
+script(src="js/crypt.js")

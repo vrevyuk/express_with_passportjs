@@ -55,14 +55,11 @@ User.prototype.findByToken = function (token, callback) {
 };
 
 User.prototype.updatePassword = function (oldPass, newPass, newPass2, token, callback) {
-	var oldPassHash = oldPass;
-	var newPassHash = newPass;
-
 	if(newPass != newPass2 || oldPass.length == 0 || newPass.length == 0 || newPass2.length == 0) {
 		return callback(null, 0);
 	}
 
-	var query = db.format('UPDATE dealer SET password = ? WHERE token = ? AND password = ?', [newPassHash, token, oldPassHash]);
+	var query = db.format('UPDATE dealer SET password = ? WHERE token = ? AND password = ?', [newPass, token, oldPass]);
 	db.query(query, function (err, result) {
 		if(err) {
 			return callback(err);
