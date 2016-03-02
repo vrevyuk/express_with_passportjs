@@ -8,7 +8,7 @@ var express = require('express');
 var news = express.Router();
 var db = require('../db/news');
 var log = require('../mylogger');
-var dateFormat = require('dateFormat');
+var dateFormat = require('dateformat');
 
 news.get('/', function (req, res, next) {
     var options = {

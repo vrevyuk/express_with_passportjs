@@ -9,7 +9,7 @@ var dpay = express.Router();
 var db = require('../db/directpay');
 
 var log = require('../mylogger');
-var dateFormat = require('dateFormat');
+var dateFormat = require('dateformat');
 
 dpay.post('/', function (req, res, next) {
     if (!req.body.sum || !req.body.account) return res.redirect('/directpay?result=1');
