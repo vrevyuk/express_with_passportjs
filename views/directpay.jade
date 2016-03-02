@@ -5,56 +5,56 @@ include html
 include tabheader
 .container
    .row
-      .col-lg-4
+      .col-md-4
          .panel.panel-default
-            .panel-heading Make transfer
+            .panel-heading Пополнить абонента
          .panel-body
             form(role="form" method="post")
                .form-group
-                  label(for="account") Account on VivatTV (six digit)
+                  label(for="account") VivatTV абонент
                   input.form-control(type="number" id="account" name="account")
                .form-group
-                  label(for="sum") Sum, UAH
+                  label(for="sum") сумма, грн
                   input.form-control(type="number" id="sum" name="sum")
                .form-group
-                  label(for="description") Description
+                  label(for="description") Примечание
                   textarea.form-control(id="description" name="description" rows="8")
-               button.btn.btn-default(type="submit") Make
+               button.btn.btn-default(type="submit") Пополнить
             br
             case postError
                when '0'
-                  .alert.alert-success Transfer successfully confirmed.
+                  .alert.alert-success Пополнено.
                when '1'
-                  .alert.alert-danger Failed. Check input values.
+                  .alert.alert-danger Ошибка, проверьте введенные данные.
                when '2'
-                  .alert.alert-danger Failed. Check input values.
+                  .alert.alert-danger Ошибка, проверьте введенные данные.
                when '3'
-                  .alert.alert-danger Failed. This customer not found.
+                  .alert.alert-danger Ошибка, абонент не найден.
                when '4'
-                  .alert.alert-danger Failed. Internal error. Retry later please.
+                  .alert.alert-danger Внутреняя ошибка, попробуте еще раз.
                when '5'
-                  .alert.alert-danger Failed. Not enough money.
-      .col-lg-8
+                  .alert.alert-danger Ошибка, у Вас не достаточно денег.
+      .col-md-8
          .panel.panel-default
-            .panel-heading List of pays
+            .panel-heading Список поплнений
          .panel-body
             table.table.table-hover
                thead
                   tr
-                     th id
-                     th sum, UAH
-                     th date
-                     th customer
+                     th Сумма, грн
+                     th Дата проводки
+                     th Абонент
+                     th Примечание
                tbody
                   each row in money
                      tr
-                        td #{row.id}
                         td #{Math.abs(row.sum)}
                         td #{row.formated_date}
+                        td #{row.customer}
                         td #{row.description}
             br
             ul.pager
                li.previous
-                  a(href="/directpay?page=#{prevPage}") Previous
+                  a(href="/directpay?page=#{prevPage}") Предыдущая
                li.next
-                  a(href="/directpay?page=#{nextPage}") Next
+                  a(href="/directpay?page=#{nextPage}") Следующая

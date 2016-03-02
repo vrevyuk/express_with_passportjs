@@ -5,21 +5,21 @@
 var conf = require('nconf');
 conf.env().file({file: './config/index.json'});
 var express = require('express');
-var code = express.Router();
-var db = require('../db/code');
+var promo = express.Router();
+var db = require('../db/promo');
 var log = require('../mylogger');
 var dateformat = require('dateformat');
 
-code.post('/', function (req, res, next) {
+promo.post('/', function (req, res, next) {
     var expire = Date.parse(req.body.expire) / 1000;
     if(req.body.series_name.length == 0 || !expire || parseInt(req.body.count) < 1 || parseInt(req.body.count) > 10000000000) {
-        return res.redirect('/code?error=Error in input data.');
+        return res.redirect('/promo?error=Ошибка в веденных данных.');
     }
     var opt = {
         name: req.body.series_name,
         cost: req.body.cost,
         expire: expire,
-        promo: 0,
+        promo: 1,
         count: req.body.count,
         description: req.body.description,
         dealer: req.user
@@ -27,31 +27,32 @@ code.post('/', function (req, res, next) {
 
     db.add(opt, function (err, result) {
         if(err) return next(err);
-        return res.redirect('/code?' + result);
+        return res.redirect('/promo?' + result);
     });
 });
 
-code.get('/', function (req, res, next) {
+promo.get('/', function (req, res, next) {
     var opt = {
         dealer: req.user.id
     };
-    db.getGroups(opt, function (err, result) {
+    db.getPromoListGroups(opt, function (err, result ,tariffs) {
         if (err) {
             next(err);
         } else {
-            res.render('code', {
-                path: 'code',
+            res.render('promo', {
+                path: 'promo',
                 isAuth: req.isAuthenticated(),
                 user: req.user,
                 error: req.query.error,
                 success: req.query.success,
-                groups: result
+                groups: result,
+                tariffs: tariffs
             });
         }
     });
 });
 
-code.get('/:name', function (req, res, next) {
+promo.get('/:name', function (req, res, next) {
     var opt = {
         group: req.params.name,
         dealer: req.user.id,
@@ -71,8 +72,8 @@ code.get('/:name', function (req, res, next) {
                 item.expire = dateformat(new Date(item.expire) * 1000, 'dd-mm-yyyy');
             });
 
-            return res.render('group_code', {
-                path: 'code',
+            return res.render('group_promo', {
+                path: 'promo',
                 isAuth: req.isAuthenticated(),
                 user: req.user,
                 error: req.query.error,
@@ -88,4 +89,4 @@ code.get('/:name', function (req, res, next) {
     });
 });
 
-module.exports = code;
+module.exports = promo;

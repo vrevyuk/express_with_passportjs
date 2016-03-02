@@ -9,7 +9,7 @@ var checkCustomer = function (customer, callback) {
 	var query = db.format('SELECT * FROM registred_stb WHERE id = ?', [customer]);
 	db.query(query, function (err, result) {
 		if(err) {
-			return callback(new Error(err.message, err.errno));
+			return callback(err);
 		} else {
 			return callback(null, result.length);
 		}
@@ -17,62 +17,45 @@ var checkCustomer = function (customer, callback) {
 };
 
 var addDealerMoney = function (opt, callback) {
-	var query = db.format('INSERT INTO money (dealer_id, sum, type, time_transaction, customer, description) VALUES(?, ?, \'DIRECTPAY\', unix_timestamp(), ?, ?)',
-		[opt.user.id, -opt.sum, opt.customer, opt.description]);
+	var query = db.format('INSERT INTO money (dealer, sum, time_transaction, customer, description) VALUES(?, ?, unix_timestamp(), ?, ?)',
+		[opt.dealer.id, -opt.cost, opt.customer, opt.description]);
 	db.query(query, function (err, sqlResult) {
-		if(err) {
-			return callback(new Error(err.message, err.errno));
-		} else {
-			return callback(null, sqlResult.insertId);
-		}
+		return callback(null, sqlResult.insertId);
 	});
 };
 
 var addStbMoney = function (opt, insertId, callback) {
-	var paydocnumber = 'DEALER ' + opt.user.id + '/' + insertId;
+	var paydocnumber = 'DEALER ' + opt.dealer.id + '/' + insertId;
 	var query = db.format('INSERT INTO stb_paymets(paydocnum, regstbid, date_pay, time_oper, is_income, pay_sum, desription, isPseudo) ' +
 		'VALUES (?, ?, now(), now(), 1, ?, ?, 0)',
-		[paydocnumber, opt.customer, opt.sum, 'Payment from dealer ' + opt.user.name]);
+		[paydocnumber, opt.customer, opt.cost, 'Payment from dealer ' + opt.dealer.name]);
 	db.query(query, function (err, result) {
 		if(err) {
 			db.query(db.format('DELETE FROM money WHERE id = ?', [insertId]));
-			callback(new Error(err.message, err.errno));
+			callback(err);
 		} else {
 			callback(null, result.insertId > 0 ? 0 : 4);
 		}
 	});
 };
 
-var checkBalance = function (opt, callback) {
-	var query = db.format('SELECT (sum(m.sum) + d.credit - ?) as total_sum FROM `money` AS m, dealer AS d WHERE m.dealer_id = d.id and d.id = ?', [opt.sum, opt.user.id]);
-	db.query(query, function (err, result, fields) {
-		if(err) {
-			return callback(err);
-		} else {
-			return callback(null, (parseInt(result[0][fields[0].name]) >= 0));
-		}
-	});
-};
-
-var Directpay = function () {};
-
-Directpay.prototype.get = function (opt, callback) {
+module.exports.get = function (opt, callback) {
 	var dealer = 0, start, limit = 15;
 	if (opt) {
 		dealer = opt.dealer || dealer;
 		start = opt.page * limit || 0;
 		limit = opt.limit || limit;
 	}
-	var query = db.format('SELECT COUNT(*) FROM money WHERE type = ? AND dealer_id = ?',['DIRECTPAY', dealer]);
+	var query = db.format('SELECT COUNT(*) FROM money WHERE description like \'DIRECT%\' AND dealer = ?',[dealer]);
 	db.query(query, function (err, result, fields) {
 		if(err) {
-			return callback(new Error(err.message, err.errno));
+			return callback(err);
 		} else {
 			var count = result[0][fields[0].name];
-			var query = db.format('SELECT * FROM money WHERE type = ? AND dealer_id = ? ORDER BY id DESC LIMIT ?, ?',['DIRECTPAY', dealer, start, limit]);
+			var query = db.format('SELECT * FROM money WHERE description like \'DIRECT%\' AND dealer = ? ORDER BY id DESC LIMIT ?, ?',[dealer, start, limit]);
 			db.query(query, function (err, result) {
 				if(err) {
-					return callback(new Error(err.message, err.errno));
+					return callback(err);
 				} else {
 					return callback(null, result, count, limit);
 				}
@@ -81,17 +64,16 @@ Directpay.prototype.get = function (opt, callback) {
 	})
 };
 
-Directpay.prototype.put = function (opt, callback) {
+module.exports.put = function (opt, callback) {
 	if (!opt) return callback(null, 2);
-	if (!opt.user) return callback(null, 2);
+
 	if(parseInt(opt.sum) <= 0) return callback(null, 2);
 	if(parseInt(opt.customer) <= 0) return callback(null, 2);
-
-	checkBalance(opt, function (err, grant) {
+	db.checkMoney(opt, function (err, balance) {
 		if(err) {
 			return callback(err);
 		} else {
-			if(!grant) {
+			if(balance < 0) {
 				return callback(null, 5);
 			} else {
 				checkCustomer(opt.customer, function (err, found) {
@@ -115,5 +97,3 @@ Directpay.prototype.put = function (opt, callback) {
 	});
 };
 
-
-module.exports = new Directpay();

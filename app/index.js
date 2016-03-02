@@ -16,6 +16,7 @@ var profile = require('./../router/profile');
 var money = require('./../router/money');
 var news = require('./../router/news');
 var code = require('./../router/code');
+var promo = require('./../router/promo');
 var directpay = require('./../router/directpay');
 
 
@@ -27,6 +28,7 @@ app.set('views', './views');
 app.use(express.static('./static'));
 
 passport.use(new LocalStrategy(function (username, password, done) {
+    //log(username, password);
     db.findByLoginPassword(username, password, function (err, user) {
         return done(err, user);
     });
@@ -69,8 +71,8 @@ app.use('/profile', profile);
 app.use('/money', money);
 app.use('/news', news);
 app.use('/code', code);
+app.use('/promo', promo);
 app.use('/directpay', directpay);
-
 
 app.use(require('./../error404'));
 app.use(require('./../error500'));

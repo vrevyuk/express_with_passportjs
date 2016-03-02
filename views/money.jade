@@ -5,36 +5,25 @@ include tabheader
 .container
    .panel(class=(balance < 0 ? 'panel-danger' : (balance < 500 ? 'panel-warning' : 'panel-info')))
       .panel-heading
-         .panel-title Your current balance: #{balance} UAH
+         .panel-title Доступная сумма #{balance} грн, учитывая резерв (кредит).
       .panel-body
          table.table.table-hover
             thead
                tr
-                  th id
-                  th(colspan="2") sum
-                  th customer
-                  th date
-                  th description
+                  th Сумма
+                  th Абонент
+                  th Дата
+                  th Примечание
             tbody
-               each row in list
-                  tr
-                     td #{row.id}
-                     td #{row.sum}
-                     td
-                        case  row.type
-                           when 'ADDING'
-                              span.glyphicon.glyphicon-arrow-down(data-toggle="tooltip" title="Adding transfer money")
-                           when 'WRITEOFF'
-                              span.glyphicon.glyphicon-ban-circle(data-toggle="tooltip" title="Manually writeoff")
-                           when 'DIRECTPAY'
-                              span.glyphicon.glyphicon-arrow-up(data-toggle="tooltip" title="Direct pay to account")
-                           when 'CODEPAY'
-                              span.glyphicon.glyphicon-arrow-up(data-toggle="tooltip" title="Code used")
-                     td #{row.customer}
-                     td #{new Date(row.time_transaction * 1000)}
-                     td #{row.description}
+               if list
+                  each row in list
+                     tr
+                        td #{row.sum}
+                        td #{row.customer}
+                        td #{row.time_transaction}
+                        td #{row.description}
          ul.pager
             li.previous
-               a(href="/money/#{prevPage}") previous
+               a(href="/money?page=#{prevPage}") Предыдущая
             li.next
-               a(href="/money/#{nextPage}") next
+               a(href="/money?page=#{nextPage}") Следующая

@@ -14,10 +14,11 @@ var dateFormat = require('dateFormat');
 dpay.post('/', function (req, res, next) {
     if (!req.body.sum || !req.body.account) return res.redirect('/directpay?result=1');
     var options = {
-        user: req.user,
-        sum: req.body.sum,
-        customer: req.body.account,
-        description: req.body.description
+        dealer: req.user,
+        cost: req.body.sum || 0,
+        count: 1,
+        customer: req.body.account || 0,
+        description: 'DIRECTPAY: ' + req.body.description
     };
     db.put(options, function (err, result) {
         if(err) {

@@ -8,32 +8,33 @@ var express = require('express');
 var money = express.Router();
 var db = require('../db/money');
 var log = require('../mylogger');
+var dateformat = require('dateformat');
 
 money.get('/', function (req, res, next) {
-    res.redirect('/money/0');
-});
+    var opt = {
+        dealer: req.user,
+        page: parseInt(req.query.page) || 0,
+        perPage: conf.get('options:rowsPerPage') || 10
+    };
 
-money.get('/:page', function (req, res, next) {
-    var count = conf.get('options:rowsPerPage') || 10;
-    var start = req.params.page * count;
-
-    db.find(req.user.token, start, count, function (err, balance, allcount, result) {
+    db.moneyList(opt, function (err, result) {
         if(err) {
-            next(new Error(err, err.errno));
+            next(err);
         } else {
+            var prevPage = opt.page - 1;
+            if (prevPage < 0) prevPage = 0;
+            var nextPage = opt.page + 1;
+            if (nextPage >= result.count / opt.perPage) nextPage--;
 
-            var prevPage = parseInt(req.params.page) - 1;
-            if(prevPage < 0) prevPage = 0;
-
-            var nextPage = parseInt(req.params.page) + 1;
-            if(nextPage > allcount / count) nextPage = Math.floor(allcount / count);
-
+            result.list.forEach(function (item) {
+                item.time_transaction = dateformat(new Date(item.time_transaction) * 1000, 'dd-mm-yyyy');
+            });
             res.render('money', {
                 path: 'money',
                 isAuth: req.isAuthenticated(),
                 user: req.user,
-                balance: balance,
-                list: result,
+                balance: result.balance,
+                list: result.list,
                 prevPage: prevPage,
                 nextPage: nextPage
             })

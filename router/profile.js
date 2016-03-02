@@ -18,14 +18,16 @@ profile.get('/', function (req, res) {
 profile.post('/', function (req, res, next) {
     switch (req.body.action) {
         case 'changepasswd':
-            var oldPass = req.body.old_password || '0';
-            var newPass = req.body.new_password || '1';
-            var newPass2 = req.body.retyped_password || '2';
-            var token = req.body.token || -1;
+            var opt = {
+                oldPass: req.body.old_password,
+                newPass: req.body.new_password,
+                newPass2: req.body.retyped_password,
+                dealer: req.user.id
+            };
 
-            db.updatePassword(oldPass, newPass, newPass2, token, function (err, affectedtRows) {
+            db.updatePassword(opt, function (err, affectedtRows) {
                 if(err) {
-                    next(new Error(err, err.errno));
+                    next(err);
                 } else {
                     res.render('profile', {
                         path: 'profile',

@@ -11,7 +11,9 @@ var updateToken = function (id, callback) {
 	var token = new Date().getTime();
 	var query = db.format('UPDATE dealer SET token = ? WHERE id = ?', [token, id]);
 	db.query(query, function (err, result) {
-		if(err) return callback(new Error(err.message, err.errno));
+
+		if(err) return callback(err);
+
 		if (result.changedRows == 1) {
 			return callback(null, token);
 		} else {
@@ -21,11 +23,11 @@ var updateToken = function (id, callback) {
 };
 
 
-User.prototype.findByLoginPassword = function (login, password, callback) {
+module.exports.findByLoginPassword = function (login, password, callback) {
 	var query = db.format('SELECT * FROM dealer WHERE login = ? AND password = ?', [login, password]);
 	db.query(query, function (err, result) {
 		if(err) {
-			return callback(new Error('' + err, err.errno));
+			return callback(err);
 		} else {
 			if (result.length == 1) {
 				updateToken(result[0].id, function (err, newToken) {
@@ -43,30 +45,25 @@ User.prototype.findByLoginPassword = function (login, password, callback) {
 	});
 };
 
-User.prototype.findByToken = function (token, callback) {
+module.exports.findByToken = function (token, callback) {
 	var query = db.format('SELECT * FROM dealer WHERE token = ?', [token]);
 	db.query(query, function (err, result) {
 		if(err) {
-			return callback(new Error('' + err, err.errno));
+			return callback(err);
 		} else {
 			return result.length == 1 ? callback(null, result[0]) : callback(null, null);
 		}
 	});
 };
 
-User.prototype.updatePassword = function (oldPass, newPass, newPass2, token, callback) {
-	if(newPass != newPass2 || oldPass.length == 0 || newPass.length == 0 || newPass2.length == 0) {
-		return callback(null, 0);
+module.exports.updatePassword = function (opt, cb) {
+	if (!opt) return cb('No option.', 500);
+	if(opt.newPass != opt.newPass2 || opt.oldPass.length == 0 || opt.newPass.length == 0 || opt.newPass2.length == 0) {
+		return cb(null, 0);
 	}
 
-	var query = db.format('UPDATE dealer SET password = ? WHERE token = ? AND password = ?', [newPass, token, oldPass]);
+	var query = db.format('UPDATE dealer SET password = ? WHERE id = ? AND password = ?', [opt.newPass, opt.dealer, opt.oldPass]);
 	db.query(query, function (err, result) {
-		if(err) {
-			return callback(err);
-		} else {
-			return callback(null, result.affectedRows);
-		}
+		return cb(null, result.affectedRows);
 	});
 };
-
-module.exports = new User();

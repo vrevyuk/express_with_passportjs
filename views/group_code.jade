@@ -1,0 +1,31 @@
+//
+   Created by glavnyjpolzovatel on 18.02.16.
+
+include html
+include tabheader
+.container
+   .well For group <b> #{groupname} </b> total count #{count} codes
+   table.table.table-hover
+      thead
+         th Код
+         th Срок годности
+         th Сумма
+         th Статус
+         th Примечание
+      tbody
+         for item in list
+            tr
+               td #{item.code}
+               td #{item.expire}
+               td #{item.sum}
+               td #{item.status}
+               td #{item.description}
+   ul.pager
+      li.previous(class=(page == 0 ? 'disabled' : ''))
+         a(href="/code/" + groupname + '?page=' + prevPage) Предыдущая
+      li
+         span страница #{page + 1}
+      li.next(class=(page == nextPage ? 'disabled' : ''))
+         a(href="/code/" + groupname + '?page=' + nextPage) Следующая
+
+

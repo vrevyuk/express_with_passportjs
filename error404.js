@@ -5,6 +5,6 @@
 var log = require('./mylogger');
 
 module.exports = function (req, res, next) {
-    log.warn('File or path not found. ', req.path);
+    log('File or path not found. ', req.path);
     res.render('error', {error: 404});
 };

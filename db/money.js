@@ -4,31 +4,31 @@
 var db = require('./index');
 var log = require('../mylogger');
 
-var Money = function () {};
+module.exports.moneyList = function (opt, cb) {
+	if (!opt) return cb(new Error('No option.', 500));
+	opt.stock = 0;
 
-Money.prototype.find = function (token, start, count, callback) {
-	if(!token) return callback(null, 0, 0);
-	if (!start) start = 0;
-	if (!count) count = 20;
-	var query = db.format('SELECT m.* FROM dealer AS d, money AS m WHERE m.dealer_id = d.id AND d.token = ? ORDER BY m.id DESC LIMIT ?, ?',[token, start, count]);
-	db.query(query, function (err, result) {
-		if(err) {
-			return callback(new Error(err, err.errno));
+	db.checkMoney(opt, function (err, sum) {
+		if (err) {
+			return cb(err);
 		} else {
-			if(result.length == 0) {
-				return callback(null, 0, 0);
-			} else {
-				query = query.replace('m.*', 'COUNT(*), sum(m.sum)').replace('LIMIT ' + start + ', ' + count, '');
-				db.query(query, function (err, limitResult, fields) {
-					if(err) {
-						return callback(new Error(err, err.errno));
-					} else {
-						return callback(null, limitResult[0][fields[1].name], limitResult[0][fields[0].name], result);
-					}
-				});
-			}
-		}
-	})
-};
 
-module.exports = new Money();
+			var start = (opt.page || 0) * (opt.perPage || 0);
+			var perPage = opt.perPage || 0;
+			var query = db.format('SELECT * FROM money WHERE dealer = ? LIMIT ?, ?;' +
+				'SELECT count(*) as count FROM money WHERE dealer = ?;', [opt.dealer.id, start, perPage, opt.dealer.id]);
+
+			db.query(query, function (err, results) {
+				if(err) {
+					return cb(err);
+				} else {
+					return cb(null, {
+						count: results[1][0].count || 0,
+						list: results[0],
+						balance: sum
+					});
+				}
+			})
+		}
+	});
+};

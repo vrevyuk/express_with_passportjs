@@ -6,25 +6,26 @@
       .navber-header
          .navbar-brand
             if isAuth
-               span Welcome,&nbsp;
                b #{user.name}
             else
-               a(href="/login") SignIn
+               span VivatTV страница дилера
       .collapse.navbar-collapse
          if isAuth
             ul.nav.navbar-nav
                li(class="#{path == 'profile' ? 'active' : ''}")
-                a(href="/profile") Profile
+                a(href="/profile") Профиль
                li(class="#{path == 'money' ? 'active' : ''}")
-                  a(href="/money") Money
+                  a(href="/money") Деньги
                li(class="#{path == 'code' ? 'active' : ''}")
-                  a(href="/code") Activation code
+                  a(href="/code") Коды пополнения
+               li(class="#{path == 'promo' ? 'active' : ''}")
+                  a(href="/promo") Промо коды
                li(class="#{path == 'directpay' ? 'active' : ''}")
-                  a(href="/directpay") Direct pay
-               li(class="#{path == 'statistic' ? 'active' : ''}")
-                  a(href="/statistic") Statistic
+                  a(href="/directpay") Прямой платеж
+               //li(class="#{path == 'statistic' ? 'active' : ''}")
+               //   a(href="/statistic") Statistic
                li(class="#{path == 'news' ? 'active' : ''}")
-                  a(href="/news") Latest news
+                  a(href="/news") Извещения
             ul.nav.navbar-nav.navbar-right
                li
-                  a(href="/logout") Logout
+                  a(href="/logout") Выход

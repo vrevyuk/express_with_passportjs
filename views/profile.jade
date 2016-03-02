@@ -8,53 +8,49 @@ include tabheader
       .col-lg-6
          .panel.panel-default
             .panel-heading
-               .panel-title Basic profile info
+               .panel-title Профиль дилера
             .panel-body
                table.table
                   tr
-                     td Full name
+                     td Полное имя
                      td #{user.name}
                   tr
-                     td Login
+                     td Логин
                      td #{user.login}
                   tr
-                     td Credit
-                     td #{user.credit} UAH
+                     td Сумма резерва (кредита)
+                     td #{user.credit} грн
                   tr
-                     td Discount
+                     td Скидка
                      td #{user.discount} %
                   tr
-                     td Discount on stock
-                     td #{user.stock_discount} %
-                  tr
-                     td Total sum on all stock
-                     td #{user.stock_sum} UAH
+                     td Делегированная сумма для промокодов
+                     td #{user.promo_sum} грн
       .col-lg-6
          .panel.panel-default
             .panel-heading
-               .panel-title Change password
+               .panel-title Сменить пароль
             .panel-body
                form(role="form" action="/profile" method="post")
                   input(type="hidden" name="action" value="changepasswd")
                   input(type="hidden" name="username" value="#{user.login}")
-                  input(type="hidden" name="token" value="#{user.token}")
                   input(type="hidden" name="old_password")
                   input(type="hidden" name="new_password")
                   input(type="hidden" name="retyped_password")
                   .form-group
-                     label(for="old_password") Old password
+                     label(for="old_password") Старый пароль
                      input.form-control(type="password" id="text_old_password")
                   .form-group
-                     label(for="new_password") New password
+                     label(for="new_password") Новый пароль
                      input.form-control(type="password" id="text_new_password")
                   .form-group
-                     label(for="retyped_password") Retype new password
+                     label(for="retyped_password") Повтор нового пароля
                      input.form-control(type="password" id="text_retyped_password")
-                  button.btn.btn-default(type="submit") Change
+                  button.btn.btn-default(type="submit") Сменить
                br
                if typeof updatedPassword !== 'undefined' && updatedPassword == 0
-                  .alert.alert-danger(role="alert") Error updating passwword
+                  .alert.alert-danger(role="alert") Ошибка смены пароля
                else if typeof updatedPassword !== 'undefined' && updatedPassword == 1
-                  .alert.alert-success(role="alert") Successfully updated
+                  .alert.alert-success(role="alert") Пароль изменен
 script(src="js/crypto-js/crypto-js.js")
 script(src="js/crypt.js")

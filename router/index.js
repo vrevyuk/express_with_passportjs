@@ -6,17 +6,18 @@ var router = express.Router();
 var log = require('../mylogger');
 
 router.get('/', function (req, res) {
-    res.render('greeting', {
-        path: req.path,
-        isAuth: req.isAuthenticated(),
-        user: req.user
-    });
+    return res.redirect('/news');
+    //res.render('greeting', {
+    //    path: req.path,
+    //    isAuth: req.isAuthenticated(),
+    //    user: req.user
+    //});
 });
 
 router.get('/logout', function (req, res) {
     req.logout();
     req.session.destroy();
-    res.redirect('/greeting');
+    res.redirect('/login');
 });
 
 router.get('/greeting', function (req, res) {
