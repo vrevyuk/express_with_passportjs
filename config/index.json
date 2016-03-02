@@ -1,13 +1,8 @@
 {
   "network" : {
-    "port": 1971
+    "port": 19710
   },
   "database": {
-    "host": "127.0.0.1",
-    "socket": "/tmp/mysql.sock",
-    "user": "root",
-    "password": "",
-    "name": "dealers"
   },
   "options": {
     "rowsPerPage": 15
