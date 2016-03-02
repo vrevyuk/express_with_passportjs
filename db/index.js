@@ -33,14 +33,7 @@ var mysqlErrorHandler = function (err) {
 };
 
 db.on('error', mysqlErrorHandler);
-db.connect(function (err) {
-    if(!err) {
-        /** TODO:
-         *  if not exists db must import structure from file into the server !!!
-         *  maybe use command line executor for mysql utility ?
-         */
-    }
-});
+db.connect();
 
 module.exports = db;
 
@@ -58,8 +51,8 @@ module.exports = db;
  */
 module.exports.checkMoney = function (opt, cb) {
     if (!opt) cb(null, false);
-    var moneySumQuery = db.format('SELECT sum(sum) as sum FROM money WHERE dealer = ?;\n', [opt.dealer.id]);
-    var codeSumQuery = db.format('SELECT sum(sum) as sum FROM codes WHERE promo = 0 AND status = 0 AND dealer = ?;\n', [opt.dealer.id]);
+    var moneySumQuery = db.format('SELECT sum(sum) as sum FROM dealer_money WHERE dealer = ?;\n', [opt.dealer.id]);
+    var codeSumQuery = db.format('SELECT sum(sum) as sum FROM dealer_codes WHERE promo = 0 AND status = 0 AND dealer = ?;\n', [opt.dealer.id]);
     db.query(moneySumQuery + codeSumQuery, function (err, results) {
         if(err) {
             return cb(err);
@@ -77,7 +70,7 @@ module.exports.makeCode = function (start, opt, cb) {
     var description = opt.description || '';
     var data = new Date().getTime() + Math.random() * 100;
     var hashCode = Cryptojs.SHA1(data.toString()).toString().replace(/[A-Za-z]/g, '').substr(0, 16);
-    var query = db.format('INSERT INTO codes (code, expire, dealer, sum, promo, groups, status, customer, description) ' +
+    var query = db.format('INSERT INTO dealer_codes (code, expire, dealer, sum, promo, groups, status, customer, description) ' +
         ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [hashCode, opt.expire, opt.dealer.id, opt.cost, promo, opt.name, 0, 0, description]);
     var self = db;
     db.query(query, function (err, result) {

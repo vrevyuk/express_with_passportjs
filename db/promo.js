@@ -6,7 +6,7 @@ var log = require('../mylogger');
 
 var checkLimit = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
-	var query = db.format('SELECT sum(sum) as sum FROM codes WHERE dealer = ? AND promo = 1 AND status = 0', [opt.dealer.id]);
+	var query = db.format('SELECT sum(sum) as sum FROM dealer_codes WHERE dealer = ? AND promo = 1 AND status = 0', [opt.dealer.id]);
 	db.query(query, function (err, result) {
 		if (err) {
 			return cb(err);
@@ -22,9 +22,9 @@ var checkLimit = function (opt, cb) {
 
 module.exports.getPromoListGroups = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
-	var query = db.format('SELECT groups as name, count(*) as unused, sum(sum) as sum FROM codes WHERE promo = 1 AND dealer = ? AND status = 0 GROUP BY groups;\n ' +
-		'SELECT groups as name, count(*) as used FROM codes WHERE promo = 1 AND dealer = ? AND status != 0 GROUP BY groups;\n' +
-		'SELECT * FROM tariffs', [opt.dealer, opt.dealer]);
+	var query = db.format('SELECT groups as name, count(*) as unused, sum(sum) as sum FROM dealer_codes WHERE promo = 1 AND dealer = ? AND status = 0 GROUP BY groups;\n ' +
+		'SELECT groups as name, count(*) as used FROM dealer_codes WHERE promo = 1 AND dealer = ? AND status != 0 GROUP BY groups;\n' +
+		'SELECT * FROM dealer_tariffs', [opt.dealer, opt.dealer]);
 	//log(query);
 	db.query(query, function (err, result) {
 		if (err) {
@@ -86,8 +86,8 @@ module.exports.viewGroup = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
 	var perPage = opt.perPage || 10;
 	var start = perPage * opt.page;
-	var query = db.format('SELECT * FROM codes WHERE promo = 1 AND dealer = ? AND groups = ? LIMIT ?, ?;\n' +
-		'SELECT count(*) as count, groups as name FROM codes WHERE promo = 1 AND dealer = ? AND groups = ?', [opt.dealer, opt.group, start, perPage, opt.dealer, opt.group]);
+	var query = db.format('SELECT * FROM dealer_codes WHERE promo = 1 AND dealer = ? AND groups = ? LIMIT ?, ?;\n' +
+		'SELECT count(*) as count, groups as name FROM dealer_codes WHERE promo = 1 AND dealer = ? AND groups = ?', [opt.dealer, opt.group, start, perPage, opt.dealer, opt.group]);
 	db.query(query, function (err, result) {
 		if (err) {
 			cb(err);

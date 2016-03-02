@@ -12,7 +12,7 @@ News.prototype.fetch = function (options, callback) {
 		options = {};
 	}
 
-	var query = db.format('SELECT * FROM news ORDER BY id DESC LIMIT 0, ?', [options.limit || 10]);
+	var query = db.format('SELECT * FROM dealer_news ORDER BY id DESC LIMIT 0, ?', [options.limit || 10]);
 	db.query(query, function (err, result) {
 		if(err) {
 			callback(new Error(err.message, err.errno));

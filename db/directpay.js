@@ -17,7 +17,7 @@ var checkCustomer = function (customer, callback) {
 };
 
 var addDealerMoney = function (opt, callback) {
-	var query = db.format('INSERT INTO money (dealer, sum, time_transaction, customer, description) VALUES(?, ?, unix_timestamp(), ?, ?)',
+	var query = db.format('INSERT INTO dealer_money (dealer, sum, time_transaction, customer, description) VALUES(?, ?, unix_timestamp(), ?, ?)',
 		[opt.dealer.id, -opt.cost, opt.customer, opt.description]);
 	db.query(query, function (err, sqlResult) {
 		return callback(null, sqlResult.insertId);
@@ -31,7 +31,7 @@ var addStbMoney = function (opt, insertId, callback) {
 		[paydocnumber, opt.customer, opt.cost, 'Payment from dealer ' + opt.dealer.name]);
 	db.query(query, function (err, result) {
 		if(err) {
-			db.query(db.format('DELETE FROM money WHERE id = ?', [insertId]));
+			db.query(db.format('DELETE FROM dealer_money WHERE id = ?', [insertId]));
 			callback(err);
 		} else {
 			callback(null, result.insertId > 0 ? 0 : 4);
@@ -46,13 +46,13 @@ module.exports.get = function (opt, callback) {
 		start = opt.page * limit || 0;
 		limit = opt.limit || limit;
 	}
-	var query = db.format('SELECT COUNT(*) FROM money WHERE description like \'DIRECT%\' AND dealer = ?',[dealer]);
+	var query = db.format('SELECT COUNT(*) FROM dealer_money WHERE description like \'DIRECT%\' AND dealer = ?',[dealer]);
 	db.query(query, function (err, result, fields) {
 		if(err) {
 			return callback(err);
 		} else {
 			var count = result[0][fields[0].name];
-			var query = db.format('SELECT * FROM money WHERE description like \'DIRECT%\' AND dealer = ? ORDER BY id DESC LIMIT ?, ?',[dealer, start, limit]);
+			var query = db.format('SELECT * FROM dealer_money WHERE description like \'DIRECT%\' AND dealer = ? ORDER BY id DESC LIMIT ?, ?',[dealer, start, limit]);
 			db.query(query, function (err, result) {
 				if(err) {
 					return callback(err);

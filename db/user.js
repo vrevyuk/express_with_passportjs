@@ -9,7 +9,7 @@ var User = function () {};
 var updateToken = function (id, callback) {
 	if(!id) return callback(null, false);
 	var token = new Date().getTime();
-	var query = db.format('UPDATE dealer SET token = ? WHERE id = ?', [token, id]);
+	var query = db.format('UPDATE dealers SET token = ? WHERE id = ?', [token, id]);
 	db.query(query, function (err, result) {
 
 		if(err) return callback(err);
@@ -24,7 +24,7 @@ var updateToken = function (id, callback) {
 
 
 module.exports.findByLoginPassword = function (login, password, callback) {
-	var query = db.format('SELECT * FROM dealer WHERE login = ? AND password = ?', [login, password]);
+	var query = db.format('SELECT * FROM dealers WHERE login = ? AND password = ?', [login, password]);
 	db.query(query, function (err, result) {
 		if(err) {
 			return callback(err);
@@ -46,7 +46,7 @@ module.exports.findByLoginPassword = function (login, password, callback) {
 };
 
 module.exports.findByToken = function (token, callback) {
-	var query = db.format('SELECT * FROM dealer WHERE token = ?', [token]);
+	var query = db.format('SELECT * FROM dealers WHERE token = ?', [token]);
 	db.query(query, function (err, result) {
 		if(err) {
 			return callback(err);
@@ -62,7 +62,7 @@ module.exports.updatePassword = function (opt, cb) {
 		return cb(null, 0);
 	}
 
-	var query = db.format('UPDATE dealer SET password = ? WHERE id = ? AND password = ?', [opt.newPass, opt.dealer, opt.oldPass]);
+	var query = db.format('UPDATE dealers SET password = ? WHERE id = ? AND password = ?', [opt.newPass, opt.dealer, opt.oldPass]);
 	db.query(query, function (err, result) {
 		return cb(null, result.affectedRows);
 	});

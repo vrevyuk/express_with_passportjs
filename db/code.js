@@ -8,8 +8,8 @@ module.exports.viewGroup = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
 	var perPage = opt.perPage || 10;
 	var start = perPage * opt.page;
-	var query = db.format('SELECT * FROM codes WHERE promo = 0 AND dealer = ? AND groups = ? LIMIT ?, ?;\n' +
-		'SELECT count(*) as count, groups as name FROM codes WHERE promo = 0 AND dealer = ? AND groups = ?', [opt.dealer, opt.group, start, perPage, opt.dealer, opt.group]);
+	var query = db.format('SELECT * FROM dealer_codes WHERE promo = 0 AND dealer = ? AND groups = ? LIMIT ?, ?;\n' +
+		'SELECT count(*) as count, groups as name FROM dealer_codes WHERE promo = 0 AND dealer = ? AND groups = ?', [opt.dealer, opt.group, start, perPage, opt.dealer, opt.group]);
 	db.query(query, function (err, result) {
 		if (err) {
 			cb(err);
@@ -21,8 +21,8 @@ module.exports.viewGroup = function (opt, cb) {
 
 module.exports.getGroups = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
-	var query = db.format('SELECT groups as name, count(*) as unused, sum(sum) as sum FROM codes WHERE promo = 0 AND dealer = ? AND status = 0 GROUP BY groups;\n ' +
-		'SELECT groups as name, count(*) as used FROM codes WHERE promo = 0 AND dealer = ? AND status != 0 GROUP BY groups;', [opt.dealer, opt.dealer]);
+	var query = db.format('SELECT groups as name, count(*) as unused, sum(sum) as sum FROM dealer_codes WHERE promo = 0 AND dealer = ? AND status = 0 GROUP BY groups;\n ' +
+		'SELECT groups as name, count(*) as used FROM dealer_codes WHERE promo = 0 AND dealer = ? AND status != 0 GROUP BY groups;', [opt.dealer, opt.dealer]);
 	//log(query);
 	db.query(query, function (err, result) {
 		if (err) {

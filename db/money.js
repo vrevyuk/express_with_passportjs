@@ -15,8 +15,8 @@ module.exports.moneyList = function (opt, cb) {
 
 			var start = (opt.page || 0) * (opt.perPage || 0);
 			var perPage = opt.perPage || 0;
-			var query = db.format('SELECT * FROM money WHERE dealer = ? LIMIT ?, ?;' +
-				'SELECT count(*) as count FROM money WHERE dealer = ?;', [opt.dealer.id, start, perPage, opt.dealer.id]);
+			var query = db.format('SELECT * FROM dealer_money WHERE dealer = ? LIMIT ?, ?;' +
+				'SELECT count(*) as count FROM dealer_money WHERE dealer = ?;', [opt.dealer.id, start, perPage, opt.dealer.id]);
 
 			db.query(query, function (err, results) {
 				if(err) {
