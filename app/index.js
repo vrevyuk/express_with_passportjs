@@ -53,7 +53,7 @@ app.use(passport.session());
 app.post('/login', passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login',
-    failureFlash: true
+    failureFlash: false
 }));
 app.get('/login', function (req, res) {
     res.render('login');
