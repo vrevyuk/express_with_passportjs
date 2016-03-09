@@ -24,18 +24,18 @@ include tabheader
                         label(for="series_name") Имя группы
                         input(type="text" placeholder="Имя группы" name="series_name" id="series_name").form-control
                   .form-group
-                     label(for="series_name") Количество кодов
+                     label(for="count") Количество кодов
                      input(type="number" placeholder="Количество кодов" name="count" id="count").form-control
                   .form-group
-                     label(for="series_name") Тариф-акция
-                     select(name="cost").form-control
+                     label(for="promo_tariff") Тариф-акция
+                     select(name="promo_tariff" id="promo_tariff").form-control
                         for tariff in tariffs
-                           option(value="#{tariff.cost}") #{tariff.tarif_name} (#{tariff.cost} грн на #{tariff.duration} месяца)
+                           option(value="#{tariff.id}") #{tariff.tarif_name} (#{tariff.cost} грн на #{tariff.duration} месяца)
                   .form-group
-                     label(for="series_name") Дата срока годности группы кодов
+                     label(for="expire") Дата срока годности группы кодов
                      input(type="text" placeholder="Дата срока годности группы кодов" name="expire" id="expire" value="").form-control
                   .form-group
-                     label(for="series_name") Примечания
+                     label(for="description") Примечания
                      input(type="text" placeholder="Примечания" name="description").form-control
                   button.btn.btn-default(type="submit").form-control Создать
                   | &nbsp;

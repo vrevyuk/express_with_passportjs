@@ -16,18 +16,30 @@ promo.post('/', function (req, res, next) {
         return res.redirect('/promo?error=' + encodeURIComponent('Ошибка при вводе данных.'));
     }
     var opt = {
-        name: req.body.series_name,
-        cost: req.body.cost,
-        expire: expire,
-        promo: 1,
-        count: req.body.count,
-        description: req.body.description,
+        promo_tariff: req.body.promo_tariff,
         dealer: req.user
     };
-
-    db.add(opt, function (err, result) {
-        if(err) return next(err);
-        return res.redirect('/promo?' + result);
+    db.resolveTariff(opt, function (err, result) {
+        if (err) {
+            return next(err);
+        } else {
+            log(result);
+            opt = {
+                name: req.body.series_name,
+                cost: result[0].cost,
+                expire: expire,
+                promo: 1,
+                promo_tariff: result[0].id,
+                count: req.body.count,
+                description: req.body.description,
+                dealer: req.user
+            };
+            log(opt);
+            db.add(opt, function (err, result) {
+                if(err) return next(err);
+                return res.redirect('/promo?' + result);
+            });
+        }
     });
 });
 

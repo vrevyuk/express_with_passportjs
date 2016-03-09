@@ -66,12 +66,13 @@ module.exports.checkMoney = function (opt, cb) {
 };
 
 module.exports.makeCode = function (start, opt, cb) {
+    var promo_tariff = opt.promo_tariff || 0;
     var promo = opt.promo || 0;
     var description = opt.description || '';
     var data = new Date().getTime() + Math.random() * 100;
     var hashCode = Cryptojs.SHA1(data.toString()).toString().replace(/[A-Za-z]/g, '').substr(0, 16);
-    var query = db.format('INSERT INTO dealer_codes (code, expire, dealer, sum, promo, groups, status, customer, description) ' +
-        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [hashCode, opt.expire, opt.dealer.id, opt.cost, promo, opt.name, 0, 0, description]);
+    var query = db.format('INSERT INTO dealer_codes (code, expire, dealer, sum, promo, promo_tariff, groups, status, customer, description) ' +
+        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [hashCode, opt.expire, opt.dealer.id, opt.cost, promo, promo_tariff, opt.name, 0, 0, description]);
     var self = db;
     db.query(query, function (err, result) {
         if (err || result.affectedRows == 0) {

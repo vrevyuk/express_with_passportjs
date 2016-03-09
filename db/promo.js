@@ -33,6 +33,16 @@ module.exports.getPromoListGroups = function (opt, cb) {
 	});
 };
 
+module.exports.resolveTariff = function (opt, cb) {
+	if (!opt) return cb(new Error('No option.', 500));
+	var promo_tariff = opt.promo_tariff || 0;
+	var dealer = opt.dealer.id || 0;
+	var query = db.format('SELECT t.*, dt.duration, t.current_price / 100 * 30 * dt.duration as cost FROM tarifs as t, dealer_tariffs as dt WHERE t.id = dt.tariff AND t.id = ? AND dt.dealer = ?;\n', [promo_tariff, dealer]);
+	db.query(query, function (err, result) {
+		cb(err, result);
+	});
+};
+
 module.exports.add = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
 	if (!opt.cost || !opt.count) return cb(null, 'error=' + encodeURIComponent('Ошибка при вводе данных.'));
