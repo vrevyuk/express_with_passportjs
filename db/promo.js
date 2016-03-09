@@ -1,5 +1,5 @@
 /**
- * Created by glavnyjpolzovatel on 23.02.16.
+ * Created by Vitaly Revyuk on 23.02.16.
  */
 var db = require('./index');
 var log = require('../mylogger');
@@ -22,41 +22,27 @@ var checkLimit = function (opt, cb) {
 
 module.exports.getPromoListGroups = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
-	var query = db.format('SELECT groups as name, count(*) as unused, sum(sum) as sum FROM dealer_codes WHERE promo = 1 AND dealer = ? AND status = 0 GROUP BY groups;\n ' +
-		'SELECT groups as name, count(*) as used FROM dealer_codes WHERE promo = 1 AND dealer = ? AND status != 0 GROUP BY groups;\n' +
-		'SELECT * FROM dealer_tariffs', [opt.dealer, opt.dealer]);
-	//log(query);
+	var query = db.format('SELECT groups as name, sum(sum) as sum, sum(status=0) as unused, sum(status=1) as used FROM dealer_codes WHERE dealer = ? AND promo = 1 GROUP BY groups;\n' +
+		'SELECT t.*, dt.duration, t.current_price / 100 * 30 * dt.duration as cost FROM tarifs as t, dealer_tariffs as dt WHERE t.id = dt.tariff AND dt.dealer = ?;\n', [opt.dealer, opt.dealer]);
 	db.query(query, function (err, result) {
 		if (err) {
 			return cb(err);
 		} else {
-			var max = Math.max(result[0].length, result[1].length);
-			var out = [];
-			for(var i = 0; i < max; i++) {
-				if (!result[0][i]) result[0][i] = {};
-				if (!result[1][i]) result[1][i] = {};
-				out.push({
-					name: result[0][i].name || result[1][i].name,
-					unused: result[0][i].unused || 0,
-					used: result[1][i].used || 0,
-					sum: result[0][i].sum || result[1][i].sum
-				});
-			}
-			return cb(err, out, result[2]);
+			return cb(err, result[0], result[1]);
 		}
 	});
 };
 
 module.exports.add = function (opt, cb) {
 	if (!opt) return cb(new Error('No option.', 500));
-	if (parseInt(opt.cost) <= 0 || parseInt(opt.count) <= 0) return cb(null, 'error=Wrong parameters.');
+	if (!opt.cost || !opt.count) return cb(null, 'error=' + encodeURIComponent('Ошибка при вводе данных.'));
 
 	checkLimit(opt, function (err, resultofCheckLimit) {
 		if (err) {
 			return cb(err);
 		} else {
 			if (resultofCheckLimit < 0) {
-				return cb(null, 'error=Превышен лимит.');
+				return cb(null, 'error=' + encodeURIComponent('Превышен лимит.'));
 			} else {
 				return db.beginTransaction(function (err) {
 					if (err) return cb(err);
@@ -70,7 +56,7 @@ module.exports.add = function (opt, cb) {
 								if (err) {
 									return cb(err);
 								} else {
-									return cb(null, 'success=Успешно.');
+									return cb(null, 'success=' + encodeURIComponent('Успешно.'));
 								}
 							});
 						}
@@ -96,3 +82,28 @@ module.exports.viewGroup = function (opt, cb) {
 		}
 	});
 };
+
+module.exports.removeGroup = function (opt, cb) {
+	if (!opt) return cb(new Error('No option.', 500));
+	var query = db.format('DELETE FROM dealer_codes WHERE dealer = ? AND groups = ? AND status = 0 AND promo = 1', [opt.dealer, opt.group]);
+	db.query(query, function (err, result) {
+		cb(err, result ? result.affectedRows : 0);
+	});
+};
+
+module.exports.removeCode = function (opt, cb) {
+	if (!opt) return cb(new Error('No option.', 500));
+	var query = db.format('DELETE FROM dealer_codes WHERE dealer = ? AND groups = ? AND id = ? AND status = 0 AND promo = 1', [opt.dealer, opt.group, opt.code]);
+	db.query(query, function (err, result) {
+		cb(err, result ? result.affectedRows : 0);
+	});
+};
+
+module.exports.getFile = function (opt, cb) {
+	if (!opt) return cb(new Error('No option.', 500));
+	var query = db.format('SELECT * FROM dealer_codes WHERE dealer = ? AND groups = ? AND status = 0 AND promo = 1', [opt.dealer, opt.group]);
+	db.query(query, function (err, result) {
+		return cb(err, result);
+	});
+};
+

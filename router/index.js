@@ -1,5 +1,5 @@
 /**
- * Created by vitaly on 16.02.16.
+ * Created by Vitaly Revyuk on 16.02.16.
  */
 var express = require('express');
 var router = express.Router();

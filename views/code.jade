@@ -1,5 +1,5 @@
 //
-   Created by glavnyjpolzovatel on 18.02.16.
+   Created by Vitaly Revyuk on 18.02.16.
 include html
 include tabheader
 .container
@@ -13,6 +13,7 @@ include tabheader
 
                   if groups.length > 0
                      .form-group
+                        label(for="series_name") Имя группы
                         select(name="series_name" id="series_name").form-control
                            for group in groups
                               option(value="#{group.name}") #{group.name}
@@ -20,14 +21,19 @@ include tabheader
                         button.btn.btn-default(onclick="addGroup()" type="button").form-control Добавить новое имя группы
                   else
                      .form-group
-                        input(type="text" placeholder="Имя группы" name="series_name" id="series_name" value="Main").form-control
+                        label(for="series_name") Имя группы
+                        input(type="text" placeholder="Имя группы" name="series_name" id="series_name").form-control
                   .form-group
+                     label(for="count") Количество кодов
                      input(type="number" placeholder="Количество кодов" name="count" id="count").form-control
                   .form-group
+                     label(for="cost") Сумма кода
                      input(type="number" placeholder="Сумма кода" name="cost" id="cost").form-control
                   .form-group
+                     label(for="expire") Дата срока годности группы кодов
                      input(type="text" placeholder="Дата срока годности группы кодов" name="expire" id="expire").form-control
                   .form-group
+                     label(for="description") Примечания
                      input(type="text" placeholder="Примечания" name="description").form-control
                   button.btn.btn-default(type="submit").form-control Создать
                   | &nbsp;
@@ -46,14 +52,20 @@ include tabheader
                   th Создано кодов на сумму
                   th Неиспользованных кодов
                   th Использованных кодов
+                  th Файл
                tbody
                   for group in groups
                      tr
                         td
+                           a(href="/code/#{group.name}/remove")
+                              span.glyphicon.glyphicon-remove &nbsp;
                            a(href="/code/#{group.name}") #{group.name}
-                        td #{group.unused}
                         td #{group.sum}
+                        td #{group.unused}
                         td #{group.used}
+                        td
+                           a(href="/code/#{group.name}/file")
+                              span.glyphicon.glyphicon-save
 script(type="text/javascript") function addGroup() { $('#series_name').append($('<option/>', {selected: 'selected', text: prompt('Enter group name:')})) }
 script(type="text/javascript") (function () { $('#expire').datepicker({dateFormat: 'yy-mm-dd', firstDay: 1}).datepicker( "setDate", "+1y" ); })();
 

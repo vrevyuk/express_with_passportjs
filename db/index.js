@@ -1,5 +1,5 @@
 /**
- * Created by vitaly on 16.02.16.
+ * Created by Vitaly Revyuk on 16.02.16.
  */
 var mysql = require('mysql');
 var conf = require('nconf');
@@ -23,7 +23,7 @@ var mysqlErrorHandler = function (err) {
         return;
     }
     if(err.errno != 'PROTOCOL_CONNECTION_LOST') {
-        log(err.message);
+        log('INDEX DB: '  + err.message);
         throw err;
     } else {
         db.end();

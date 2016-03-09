@@ -1,5 +1,5 @@
 //
-   Created by glavnyjpolzovatel on 18.02.16.
+   Created by Vitaly Revyuk on 18.02.16.
 
 include html
 include tabheader
@@ -15,7 +15,10 @@ include tabheader
       tbody
          for item in list
             tr
-               td #{item.code}
+               td
+                  a(href="/promo/#{groupname}/#{item.id}/remove")
+                     span.glyphicon.glyphicon-remove &nbsp;
+                  b #{item.code}
                td #{item.expire}
                td #{item.sum}
                td #{item.status}

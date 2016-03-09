@@ -1,5 +1,5 @@
 /**
- * Created by glavnyjpolzovatel on 19.02.16.
+ * Created by Vitaly Revyuk on 19.02.16.
  */
 
 var conf = require('nconf');
@@ -13,7 +13,7 @@ var dateformat = require('dateformat');
 promo.post('/', function (req, res, next) {
     var expire = Date.parse(req.body.expire) / 1000;
     if(req.body.series_name.length == 0 || !expire || parseInt(req.body.count) < 1 || parseInt(req.body.count) > 10000000000) {
-        return res.redirect('/promo?error=Ошибка в веденных данных.');
+        return res.redirect('/promo?error=' + encodeURIComponent('Ошибка при вводе данных.'));
     }
     var opt = {
         name: req.body.series_name,
@@ -88,5 +88,55 @@ promo.get('/:name', function (req, res, next) {
         }
     });
 });
+
+promo.get('/:name/:id/remove', function (req, res, next) {
+    var opt = {
+        group: req.params.name,
+        code: req.params.id,
+        dealer: req.user.id
+    };
+    db.removeCode(opt, function (err, result) {
+        if (err) {
+            return next(err);
+        } else {
+            return res.redirect('/promo/' + req.params.name);
+        }
+    });
+});
+
+promo.get('/:name/remove', function (req, res, next) {
+    var opt = {
+        group: req.params.name,
+        dealer: req.user.id
+    };
+    db.removeGroup(opt, function (err, result) {
+        if (err) {
+            return next(err);
+        } else {
+            return res.redirect('/promo');
+        }
+    });
+});
+
+promo.get('/:name/file', function (req, res, next) {
+    var opt = {
+        group: req.params.name,
+        dealer: req.user.id
+    };
+    db.getFile(opt, function (err, result) {
+        if (err) {
+            return next(err);
+        } else {
+            var buffer = '';
+            result.forEach(function (item) {
+                buffer += '"' + item.code + '";' + dateformat(new Date(item.expire) * 1000, 'dd-mm-yyyy') + '\r\n';
+            });
+            res.setHeader('Content-disposition', 'attachment; filename=promo_code_' + opt.group + '.csv');
+            res.setHeader('Content-type', 'text/csv');
+            res.send(buffer);
+        }
+    });
+});
+
 
 module.exports = promo;

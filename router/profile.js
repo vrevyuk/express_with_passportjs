@@ -1,5 +1,5 @@
 /**
- * Created by glavnyjpolzovatel on 19.02.16.
+ * Created by Vitaly Revyuk on 19.02.16.
  */
 
 var express = require('express');

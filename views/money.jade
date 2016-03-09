@@ -1,11 +1,11 @@
 //
-   Created by glavnyjpolzovatel on 18.02.16.
+   Created by Vitaly Revyuk on 18.02.16.
 include html
 include tabheader
 .container
    .panel(class=(balance < 0 ? 'panel-danger' : (balance < 500 ? 'panel-warning' : 'panel-info')))
       .panel-heading
-         .panel-title Доступная сумма #{balance} грн, учитывая резерв (кредит).
+         .panel-title Баланс #{balance - user.credit} грн.
       .panel-body
          table.table.table-hover
             thead
