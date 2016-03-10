@@ -28,7 +28,7 @@ var addStbMoney = function (opt, insertId, callback) {
 	var paydocnumber = 'DEALER ' + opt.dealer.id + '/' + insertId;
 	var query = db.format('INSERT INTO stb_paymets(paydocnum, regstbid, date_pay, time_oper, is_income, pay_sum, desription, isPseudo) ' +
 		'VALUES (?, ?, now(), now(), 1, ?, ?, 0)',
-		[paydocnumber, opt.customer, opt.cost, 'Payment from dealer ' + opt.dealer.name]);
+		[paydocnumber, opt.customer, opt.cost * 100, 'Payment from dealer ' + opt.dealer.name]);
 	db.query(query, function (err, result) {
 		if(err) {
 			db.query(db.format('DELETE FROM dealer_money WHERE id = ?', [insertId]));

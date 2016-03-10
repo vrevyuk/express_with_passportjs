@@ -21,7 +21,7 @@ include tabheader
                   b #{item.code}
                td #{item.expire}
                td #{item.sum}
-               td #{item.status}
+               td #{item.status == 1 ? 'Использован' : '-'}
                td #{item.description}
    ul.pager
       li.previous(class=(page == 0 ? 'disabled' : ''))
