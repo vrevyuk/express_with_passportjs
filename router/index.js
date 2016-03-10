@@ -28,4 +28,12 @@ router.get('/greeting', function (req, res) {
     });
 });
 
+router.get('/help', function (req, res) {
+    res.render('help', {
+        path: req.path,
+        isAuth: req.isAuthenticated(),
+        user: req.user
+    });
+});
+
 module.exports = router;
