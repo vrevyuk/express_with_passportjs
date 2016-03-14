@@ -4,14 +4,48 @@
 include html
 include tabheader
 .container
+   .well
+      form(role="form" method="post").form-inline
+         .form-group
+            label(for="fromDate")  От&nbsp;
+            input.form-control(type="text" name="fromDate" id="fromDate")
+            | &nbsp;
+         .form-group
+            label(for="fromDate") до&nbsp;
+            input.form-control(type="text" name="toDate" id="toDate")
+            | &nbsp;
+         button.btn.btn-default(type="submit") Показать
+   p Сумма пополнений за период с #{fromDate} по #{toDate}
    table.table.table-hover
       thead
-         th Сеть
-         th Сумма, грн
-         th Количество абонентов
+         th Сеть / маска
+         th Сумма платежей, грн
+         th Количество плативших абонентов
       tbody
          for item in ipstat
             tr
                td #{item.network} / #{item.mask}
-               td #{item.sum}.00
+               td #{item.sum}
                td #{item.clients}
+
+script(type="text/javascript").
+   (function () {
+      $(function () {
+         $("#fromDate").datepicker({
+            dateFormat: 'yy-mm-dd',
+            firstDay: 1,
+            minDate: '2015-01-01',
+            onClose: function (selectedDate) {
+               $("#toDate").datepicker("option", "minDate", selectedDate);
+            }
+         });
+         $("#toDate").datepicker({
+            dateFormat: 'yy-mm-dd',
+            firstDay: 1,
+            onClose: function (selectedDate) {
+               $("#fromDate").datepicker("option", "maxDate", selectedDate);
+            }
+         });
+      });
+      //$('#fromDate').datepicker({dateFormat: 'yy-mm-dd', firstDay: 1}).datepicker( "setDate", "now" );
+   })();

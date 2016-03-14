@@ -8,7 +8,21 @@ var db = require('../db/user');
 var log = require('../mylogger');
 
 profile.get('/', function (req, res, next) {
-    db.ipStatView(req.user, function (err, result) {
+    return res.render('ipstat', {
+        path: 'profile',
+        isAuth: req.isAuthenticated(),
+        user: req.user,
+        ipstat: []
+    })
+});
+
+profile.post('/', function (req, res, next) {
+    var opt = {
+        dealer: req.user,
+        fromDate: req.body.fromDate,
+        toDate: req.body.toDate
+    };
+    db.ipStatView(opt, function (err, result) {
         if (err) {
             return next(err);
         } else {
@@ -16,7 +30,9 @@ profile.get('/', function (req, res, next) {
                 path: 'profile',
                 isAuth: req.isAuthenticated(),
                 user: req.user,
-                ipstat: result
+                ipstat: result,
+                fromDate: req.body.fromDate,
+                toDate: req.body.toDate
             })
         }
     });

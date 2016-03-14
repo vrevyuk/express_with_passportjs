@@ -76,8 +76,8 @@ module.exports.ipStat = function (dealer, cb) {
 	});
 };
 
-module.exports.ipStatView = function (dealer, cb) {
-	if (!dealer) return cb('No option.', 500);
+module.exports.ipStatView = function (opt, cb) {
+	if (!opt) return cb('No option.', 500);
 	var query = db.format('SELECT INET_NTOA(dn.`network`) as network, INET_NTOA(dn.`mask`) as mask, SUM(sp.`pay_sum` / 100) AS sum, COUNT(sp.`regstbid`) as clients ' +
 		' FROM `users_stb` as us, `dealer_networks` as  dn, `registred_stb` as rs, `stb_paymets` as sp ' +
 		' WHERE dn.`dealer` = ?' +
@@ -86,8 +86,9 @@ module.exports.ipStatView = function (dealer, cb) {
 		' AND dn.`network` = us.`curr_stb_ip` & dn.`mask`' +
 		' AND sp.`isPseudo` = 0' +
 		' AND sp.`is_income` = 1' +
-		' AND (true)' +
-		' GROUP BY dn.`network`', [dealer.id]);
+		' AND (sp.`date_pay` > ? AND sp.`date_pay` < ?)' +
+		' GROUP BY dn.`network`', [opt.dealer.id, opt.fromDate, opt.toDate]);
+	//log(query);
 	db.query(query, function (err, result) {
 		return cb(err, result);
 	});
