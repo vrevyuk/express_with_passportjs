@@ -52,5 +52,11 @@ include tabheader
                   .alert.alert-danger(role="alert") Ошибка смены пароля
                else if typeof updatedPassword !== 'undefined' && updatedPassword == 1
                   .alert.alert-success(role="alert") Пароль изменен
+   .row
+      .col-lg-12
+         if ipstat > 0
+            .well
+               a(href="/ipstat").btn.btn-default Показать статистику по айпи сетям
+
 script(src="js/crypto-js/crypto-js.js")
 script(src="js/crypt.js")

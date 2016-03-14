@@ -1,0 +1,17 @@
+//
+   Created by Vitaly Revyuk on 18.02.16.
+
+include html
+include tabheader
+.container
+   table.table.table-hover
+      thead
+         th Сеть
+         th Сумма, грн
+         th Количество абонентов
+      tbody
+         for item in ipstat
+            tr
+               td #{item.network} / #{item.mask}
+               td #{item.sum}.00
+               td #{item.clients}

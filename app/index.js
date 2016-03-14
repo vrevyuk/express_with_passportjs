@@ -18,6 +18,7 @@ var news = require('./../router/news');
 var code = require('./../router/code');
 var promo = require('./../router/promo');
 var directpay = require('./../router/directpay');
+var ipstat = require('./../router/ipstat');
 
 
 var db = require('./../db/user');
@@ -73,6 +74,7 @@ app.use('/news', news);
 app.use('/code', code);
 app.use('/promo', promo);
 app.use('/directpay', directpay);
+app.use('/ipstat', ipstat);
 
 app.use(require('./../error404'));
 app.use(require('./../error500'));

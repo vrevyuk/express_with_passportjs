@@ -7,12 +7,19 @@ var profile = express.Router();
 var db = require('../db/user');
 var log = require('../mylogger');
 
-profile.get('/', function (req, res) {
-    res.render('profile', {
-        path: 'profile',
-        isAuth: req.isAuthenticated(),
-        user: req.user
-    })
+profile.get('/', function (req, res, next) {
+    db.ipStat(req.user, function (err, count) {
+        if (err) {
+            return next(err);
+        } else {
+            return res.render('profile', {
+                path: 'profile',
+                isAuth: req.isAuthenticated(),
+                user: req.user,
+                ipstat: count
+            })
+        }
+    });
 });
 
 profile.post('/', function (req, res, next) {

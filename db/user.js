@@ -67,3 +67,29 @@ module.exports.updatePassword = function (opt, cb) {
 		return cb(null, result.affectedRows);
 	});
 };
+
+module.exports.ipStat = function (dealer, cb) {
+	if (!dealer) return cb('No option.', 500);
+	var query = db.format('SELECT COUNT(*) AS count FROM dealer_networks WHERE dealer = ?', [dealer.id]);
+	db.query(query, function (err, result) {
+		return cb(err, result[0].count);
+	});
+};
+
+module.exports.ipStatView = function (dealer, cb) {
+	if (!dealer) return cb('No option.', 500);
+	var query = db.format('SELECT INET_NTOA(dn.`network`) as network, INET_NTOA(dn.`mask`) as mask, SUM(sp.`pay_sum` / 100) AS sum, COUNT(sp.`regstbid`) as clients ' +
+		' FROM `users_stb` as us, `dealer_networks` as  dn, `registred_stb` as rs, `stb_paymets` as sp ' +
+		' WHERE dn.`dealer` = ?' +
+		' AND rs.`id` = us.`reg_stb_id`' +
+		' AND sp.`regstbid` = us.`reg_stb_id`' +
+		' AND dn.`network` = us.`curr_stb_ip` & dn.`mask`' +
+		' AND sp.`isPseudo` = 0' +
+		' AND sp.`is_income` = 1' +
+		' AND (true)' +
+		' GROUP BY dn.`network`', [dealer.id]);
+	db.query(query, function (err, result) {
+		return cb(err, result);
+	});
+};
+
